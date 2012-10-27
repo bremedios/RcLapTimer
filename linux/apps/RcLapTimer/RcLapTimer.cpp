@@ -1,70 +1,65 @@
 
 #include <stdio.h>
-#include <gst/gst.h>
+#include <gtk/gtk.h>
 
 #include "RcLapTimer.h"
+#include "GStreamerSink.hpp"
+#include "LeaderBoards_Ui.hpp"
 
-static void GetSourcePlugin_(void);
+static char _sAppName[256]={0};
+
+static GtkWidget* CreateMainContainer_(void);
 
 int main(
 	int argc,
 	char** argv)
 {
-    const gchar*    nano_str;
-    guint   major, minor, micro, nano;
+    GtkWidget*  window  = NULL;
+    GtkWidget*  mainContainer   = NULL;
     
-    gst_init(&argc, &argv);
+    sprintf(
+        _sAppName,
+         "RcLapTimer Version %d.%d.%d.%d",
+         MAJOR_VERSION,
+         MINOR_VERSION,
+         RELEASE_VERSION,
+         BUILD_VERSION);
+         
+    gtk_init(&argc, &argv);
     
-    gst_version(&major, &minor, &micro, &nano);
-    
-    if (1 == nano)
-    {
-        nano_str    = "(CVS)";
-    }
-    else if (2 == nano)
-    {
-        nano_str = "(Prerelease)";
-    }
-    else
-    {
-        nano_str = "";
-    }
+    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-    printf(
-        "RC Lap Timer Version . %d.%d.%d.%d\r\n",
-        MAJOR_VERSION,
-        MINOR_VERSION,
-        RELEASE_VERSION,
-        BUILD_VERSION);
-    printf(
-        "GStreamer Version .... %d.%d.%d.%s\r\n",
-        major,
-        minor,
-        micro,
-        nano_str);
+    gtk_window_set_title(GTK_WINDOW(window), _sAppName);
+    
+    g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    
+    gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
-    GetSourcePlugin_();
-        
+    mainContainer = CreateMainContainer_();
+    
+    if (NULL == mainContainer)
+    {
+        return 0;
+    }
+    
+    gtk_container_add (GTK_CONTAINER (window), mainContainer);
+    
+    gtk_widget_show_all (window);
+
+    gtk_main ();
+
     return 0;
 } // main
 
-#if 0
-static void ListElementFactories_(void)
+static GtkWidget* CreateMainContainer_(void)
 {
-    GList*  glist = gst_registry_pool_feature_list (GST_TYPE_ELEMENT_FACTORY);
-    
-    for (   GList* ptr = glist;
-            NULL != ptr;
-            ptr = g_list_next(ptr))
-    {
-        GstElementFactory*  factory = (GstElementFactory*)ptr;
-        
-        
-    }
-}
+    GtkWidget*  container = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+    GtkWidget*  leftPane = GStreamerSink_Create();
+    GtkWidget*  rightPane = LeaderBoardsUi_Create();
 
-#endif
-static void GetSourcePlugin_(void)
-{
-} // GetSourcePlugin_
+    gtk_paned_add1(GTK_PANED(container), leftPane);    
+    gtk_paned_add2(GTK_PANED(container), rightPane);
+    
+    return container;
+} // CreateMainContainer_
 

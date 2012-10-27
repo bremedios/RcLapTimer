@@ -1,5 +1,14 @@
+CFLAGS=`pkg-config --cflags gtk+-3.0` `pkg-config --libs gtk+-3.0` -Wall
+OBJS=RcLapTimer.o GStreamerSink.o LeaderBoards_Ui.o
+LDFLAGS=`pkg-config --libs gstreamer-0.10` `pkg-config --libs gtk+-3.0`
 
 all: RcLapTimer
+
+RcLapTimer: $(OBJS)
+	$(CXX) $(OBJS) $(LDFLAGS) -o RcLapTimer
+
+%.o : %.cpp
+	$(CXX) $(CFLAGS) -c $<
 
 clean:
 	rm *~ -f
@@ -8,9 +17,6 @@ clean:
 distclean:
 	rm RcLapTimer -f
 
-RcLapTimer.o: RcLapTimer.cpp
-	$(CC) RcLapTimer.cpp -c `pkg-config --cflags gstreamer-0.10` -Wall
+
     
-RcLapTimer: RcLapTimer.o
-	$(CC) RcLapTimer.o `pkg-config --libs gstreamer-0.10` -o RcLapTimer
 
