@@ -4,6 +4,8 @@
 
 #include "RcLapTimer.h"
 
+static void GetSourcePlugin_(void);
+
 int main(
 	int argc,
 	char** argv)
@@ -40,7 +42,29 @@ int main(
         minor,
         micro,
         nano_str);
+
+    GetSourcePlugin_();
         
     return 0;
 } // main
+
+#if 0
+static void ListElementFactories_(void)
+{
+    GList*  glist = gst_registry_pool_feature_list (GST_TYPE_ELEMENT_FACTORY);
+    
+    for (   GList* ptr = glist;
+            NULL != ptr;
+            ptr = g_list_next(ptr))
+    {
+        GstElementFactory*  factory = (GstElementFactory*)ptr;
+        
+        
+    }
+}
+
+#endif
+static void GetSourcePlugin_(void)
+{
+} // GetSourcePlugin_
 
