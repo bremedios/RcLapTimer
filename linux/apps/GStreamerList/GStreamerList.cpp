@@ -85,9 +85,6 @@ static void ListPlugins_(void)
         g_print(
             "    Version ...... '%s'\n",
             gst_plugin_get_version(plugin));
-   //     g_print(
- //           "    Release Date . '%s'\n\n",
-//            gst_plugin_get_release_date_string(plugin));
     }
     
     gst_plugin_list_free(pluginList);
